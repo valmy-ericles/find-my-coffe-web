@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import EstablishmentService from './services/establishment_service';
 import Establishment from './components/Establishment';
+import NearstCoffees from './components/NearstCoffees';
 
 function App() {
   const [latitude, setLatitude] = useState(0)
@@ -32,6 +33,11 @@ function App() {
     const response = await EstablishmentService.index(latitude, longitude);
     setLocations(response.data.results);
   }
+  
+  const setPlace = (place) => {
+    setSelected(place)
+    console.log(place)
+  }
 
   return (
     <Fragment>
@@ -50,7 +56,7 @@ function App() {
                   title={item.name} 
                   animation="4" 
                   position={{lat: item.geometry.location.lat, lng: item.geometry.location.lng}}
-                  onClick={() => setSelected(item)}
+                  onClick={() => setPlace(item)}
                 />
               )
             })
@@ -69,6 +75,10 @@ function App() {
             animation="2" 
             position={{ lat: latitude, lng: longitude }}
           />
+
+          { (latitude != 0 && longitude != 0 ) &&
+            <NearstCoffees latitude={latitude} longitude={longitude} setPlace={setPlace}/>
+          }
         </GoogleMap>
       </LoadScript>
     </Fragment>
